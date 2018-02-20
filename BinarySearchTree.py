@@ -2,8 +2,8 @@ class Node:
 
 	def __init__(self, data):
 		self.data = data
-		self.leftChild = None
 		self.rightChild = None
+		self.leftChild = None
 
 
 class BinarySearchTree:
@@ -12,88 +12,93 @@ class BinarySearchTree:
 		self.root = None
 
 	def insert(self, data):
+		# check if root exists
 		if not self.root:
+			# if root does not exist, set new node as root
 			self.root = Node(data)
 		else:
-			self.insert_node(data, self.root)
+			# root exists --> call method to insert node
+			self.root = insertNode(data, self.root)
 
-	def insert_node(self, data, node):
+	def insertNode(self, data, node):
+		# check if data is in left branch
 		if data < node.data:
+			# check if node has a leftchild
 			if node.leftChild:
-				self.insert_node(data, node.leftChild)
+				# node is in left branch --> call method again with leftchild this time
+				node.leftChild = insertNode(data, node.leftChild)
+			# node does not have leftchild --> create node
 			else:
 				node.leftChild = Node(data)
-		else:
+		# check if data is in right branch
+		elif data > node.data:
+			# check if node has a rightchild
 			if node.rightChild:
-				self.insert_node(data, node.rightChild)
+				# node is in right branch --> call method again with rightchild this time
+				node.rightChild = insertNode(data, node.rightChild)
+			# node does not have rightchild --> create node
 			else:
 				node.rightChild = Node(data)
+		return node
 
 	def remove(self, data):
 		if self.root:
-			self.root = self.remove_node(data, self.root)
+			self.root = self.removeNode(data, self.root)
 
-	def remove_node(self, data, node):
-		if node is None:
-		 	return node
+	def removeNode(self, data, node)
+		# base case for recursion --> simply checks if node exists in tree
+		# if not then return node and do not modify tree
+		if not node:
+			return node
+		# check if data is in left branch
 		if data < node.data:
-			node.leftChild = self.remove_node(data, node.leftChild)
+			node.leftChild = self.removeNode(data, node.leftChild)
+		# check if data is in right branch
 		elif data > node.data:
-			node.rightChild = self.remove_node(data, node.rightChild)
+			node.rightChild = self.removeNode(data, node.rightChild)
+		# we have found the node to be removed
 		else:
+			# case 1 --> node is a leaf node
 			if not node.rightChild and not node.leftChild:
-				print('removing leaf node')
 				del node
 				return None
-			if not node.leftChild:
-				print('removing node with single right child')
+			# case 2 --> node with single leftchild
+			elif not node.rightChild:
+				tempNode = node.leftChild
+				del Node
+				return tempNode
+			# case 3 --> node with single rightchild
+			elif not node.leftChild:
 				tempNode = node.rightChild
 				del node
 				return tempNode
-			elif not node.rightChild:
-				print('removing node with single left child')
-				tempNode = node.leftChild
-				del node
-				return tempNode
-			print('removing node with two children')
-			tempNode = self.get_predecessor(node.leftChild)
+			# case 4 --> node with two children
+			# get predecessor
+			tempNode = self.getPredecessor(node.leftChild)
+			# set node to predecessor
 			node.data = tempNode.data
-			node.leftChild = self.remove_node(tempNode.data, node.leftChild)
+			# delete predecessor recursively, we know it is in left branch
+			# and we know that it satisfies case 1 or 2 which we can deal with
+			node.leftChild = self.removeNode(tempNode.data, node.leftChild)
 		return node
 
-	def get_predecessor(self, node):
+	def getPredecessor(self, node):
+		# check if given node has a rightchild
 		if node.rightChild:
-			return self.get_predecessor(node.rightChild)
+			# if so, call function recursively to return next rightchild
+			return self.getPredecessor(node.rightChild)
 		return node
-
-	def get_minimum(self):
-		if self.node:
-			return self.get_min(self.root)
-
-	def get_min(self, node):
-		if node.leftChild:
-			return self.get_min(node.leftChild)
-		return node.data
-
-	def get_maximum(self):
-		if self.node:
-			return self.get_max(self.root)
-
-	def get_max(self, node):
-		if node.rightChild:
-			return self.get_max(node.rightChild)
-		return node.data
 
 	def traverse(self):
 		if self.root:
-			self.traverse_in_order(self.root)
+			traverseInOrder(self.root)
 
-	def traverse_in_order(self, node):
-		if node.leftChild:
-			self.traverse_in_order(node.leftChild)
+	def traverseInOrder(self, node):
+		if self.leftChild:
+			self.traverseInOrder(node.leftChild)
 		print(node.data)
-		if node.rightChild:
-			self.traverse_in_order(node.rightChild)
+		if self.rightChild:
+			self.traverseInOrder(node.rightChild)
 
 if __name__ == '__main__':
 	bst = BinarySearchTree()
