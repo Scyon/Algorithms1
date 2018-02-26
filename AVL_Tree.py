@@ -21,9 +21,7 @@ class AVL:
 	def traverse_in_order(self, node):
 		if node.leftChild:
 			self.traverse_in_order(node.leftChild)
-
 		print node.data
-
 		if node.rightChild:
 			self.traverse_in_order(node.rightChild)
 
@@ -51,18 +49,17 @@ class AVL:
 			return self.rotate_right(node)
 		# case 4 --> right left heavy situation
 		if balance < -1 and data < node.rightChild.data:
-			node.rotate_right = self.rotate_right(node.rotate_right)
+			node.rightChild = self.rotate_right(node.rotate_right)
 			return self.rotate_left(node)
 		return node
 
 	def remove(self, data):
 		if self.root:
 			self.root = self.remove_node(data, self.root)
-			print('Root: {}'.format(self.root.data))
 
 	def remove_node(self, data, node):
 		if node is None:
-			return None
+			return node
 		if data < node.data:
 			node.leftChild = self.remove_node(data, node.leftChild)
 		elif data > node.data:
@@ -86,8 +83,6 @@ class AVL:
 			tempNode = self.get_predecessor(node.leftChild)
 			node.data = tempNode.data
 			node.leftChild = self.remove_node(tempNode.data, node.leftChild)
-		if not Node:
-			return node
 		node.height = max(self.calculate_height(node.leftChild), self.calculate_height(node.rightChild)) + 1
 		balance = self.calculate_balance(node)
 		#doubly left heavy
